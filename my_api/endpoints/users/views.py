@@ -2,7 +2,8 @@
 Users endpoint
 """
 
-from flask import Blueprint
+from flask import Blueprint, request
+from my_api.endpoints.models import add_user
 
 # Create the users blueprint
 USERS = Blueprint('users', __name__)
@@ -10,10 +11,11 @@ USERS = Blueprint('users', __name__)
 
 @USERS.route('/register', methods=['POST'])
 def user_register():
-    """
-    This method handles user registration
-    """
-    pass
+    data = request.get_json()
+    if add_user(data['username'], data['password']):
+        return "User added successfully."
+
+    
 
 
 @USERS.route('/login', methods=['POST'])
