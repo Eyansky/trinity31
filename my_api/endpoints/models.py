@@ -1,43 +1,22 @@
-"""
-Data storage in Data Structures
-"""
 import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 
-# Store the users
-USERS_LIST = []
-# Store the comments
-COMMENTS_LIST = []
-# Store the replies to the comments
-REPLIES_LIST = []
-# Blacklist Tokens
-BLACKLIST = set()
-
-# Helper methods
-
-
-def save_user(data):
-    """Add user"""
-    data["type"] = "User"
-    data["password"] = generate_password_hash(data["password"])
-    # save to list
-    USERS_LIST.append(data)
-
+commentslist = []
 
 def save_comment(data):
     """Add comment to list"""
-    data['comment_id'] = len(COMMENTS_LIST) + 1
+    data['comment_id'] = len(commentslist) + 1
+    data['message'] ="message"
+    data['author'] = "author"
     data['date_created'] = datetime.datetime.now()
     # save to list
-    COMMENTS_LIST.append(data)
+    commentslist.append(data)
+
 
 
 def all_user_comments(username):
     """Method to get all user comments based on their usename"""
-    # comment = [
-    #     comment for comment in COMMENTS_LIST if comment["username"] == username
-    # ]
-    return COMMENTS_LIST
+    return commentslist
 
 
 def get_comment_by_id(username, comment_id):
@@ -60,7 +39,67 @@ def delete_user_comment(username, comment_id):
     """Method that deletes a user comment by id"""
     result = get_comment_by_id(username, comment_id)
     # remove from list
-    COMMENTS_LIST.remove(result)
+    commentslist.remove(result)
+"""
+Data storage in Data Structures
+"""
+
+
+# Store the users
+USERS_LIST = []
+# Store the comments
+REPLIES_LIST = []
+# Blacklist Tokens
+BLACKLIST = set()
+
+# Helper methods
+
+
+def save_user(data):
+    """Add user"""
+    data["type"] = "User"
+    data["password"] = generate_password_hash(data["password"])
+    # save to list
+    USERS_LIST.append(data)
+
+
+def save_comment(data):
+    """Add comment to list"""
+    data['comment_id'] = len(commentslist) + 1
+    data['date_created'] = datetime.datetime.now()
+    # save to list
+    commentslist.append(data)
+
+
+def all_user_comments(username):
+    """Method to get all user comments based on their usename"""
+    # comment = [
+    #     comment for comment in commentslist if comment["username"] == username
+    # ]
+    return commentslist
+
+
+def get_comment_by_id(username, comment_id):
+    """Method to update a previous comment"""
+    # call the all comments method
+    dicts = all_user_comments(username)
+    result = next(
+        (item for item in dicts if item["comment_id"] == comment_id), False)
+    return result
+
+
+def modify_user_comment(username, comment_id, comment):
+    """Method that modifies a comment"""
+    result = get_comment_by_id(username, comment_id)
+    result["comment"] = comment
+    result["date_updated"] = datetime.datetime.now()
+
+
+def delete_user_comment(username, comment_id):
+    """Method that deletes a user comment by id"""
+    result = get_comment_by_id(username, comment_id)
+    # remove from list
+    commentslist.remove(result)
 
 
 def check_username(search_username):
