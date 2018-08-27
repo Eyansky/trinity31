@@ -1,8 +1,9 @@
 """
 Comments endpoint
 """
+from flask import Blueprint, request, jsonify
+from my_api.endpoints.models import (save_comment)
 
-from flask import Blueprint
 
 # Create the comments blueprint
 COMMENTS = Blueprint('comments', __name__)
@@ -13,7 +14,20 @@ def create_comment():
     """
     This method handles comment creation
     """
-    pass
+    post_data = request.get_json()
+    data = {
+        "comment_id":post_data.get("comment_id"),
+        "message": post_data.get("message"),
+        "author": post_data.get("author"),
+        "date created": post_data.get("date_created")
+    }
+    save_comment(data)
+    response_object = {
+        "message":data,
+        "status": "successfuly posted",
+        "msg": "New comment has been successfully added."
+    }
+    return jsonify(response_object)
 
 
 @COMMENTS.route('/comments', methods=['GET'])
